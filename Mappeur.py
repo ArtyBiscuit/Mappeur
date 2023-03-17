@@ -1,4 +1,5 @@
 try:
+    import time
     import requests
 except ImportError as err:
     print(err)
@@ -17,20 +18,27 @@ def heder():
 
 def get(url):
     r = requests.get(url)
-    #print(r.status_code)
     if r.status_code == 200:
-        prCyan(url + r.status_code)
+        print ("\033[A                                                                                    \033[A")
+        prCyan('(' + str(r.status_code) + ')' + ' ' + url)
     elif r.status_code == 429:
-        prYellow(url + r.status_code)
+        print ("\033[A                                                                                    \033[A")
+        prYellow('(' + str(r.status_code) + ')' + ' ' + url)
+    elif r.status_code == 404:
+        print ("\033[A                                                                                    \033[A")
+        print("Try:", url, end="")
 
 
 def get_word_file(default):
     wst = default
     while True:
         wst = str(input("Wordlist: "))
+        print()
         if wst == "":
-            print("\nWordlist not set.")
+            print("Wordlist not set.")
+            time.sleep(2)
             while True:
+                print ("\033[A                                                                                    \033[A")
                 rep = input("Use default ?. (y/n): ")
                 if rep == 'y':
                     wst = default
@@ -43,14 +51,15 @@ def get_word_file(default):
 
 def main():
     heder()
-    default_wordlst = "wordlst"
+    default_wordlst = "Wordlist/wordlst"
     url = str(input("URL: "))
+    timeToSleep = float(input("TTS (default 2s): "))
     wst = get_word_file(default_wordlst)
     f = open(wst, "r")
     lines = f.readlines()
     f.close()
     for path in lines:
-      #  print("Try : %s" % (url + path))
+        time.sleep(timeToSleep)
         get(url + path)
 
 if __name__ == "__main__":
